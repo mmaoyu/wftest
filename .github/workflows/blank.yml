@@ -39,16 +39,12 @@ jobs:
             Documentation/**.md
             Documentation/**/**.md
 
-      - name: List all changed files markdown files
+      - name: List all changed files markdown files with 3rd person('you','they')
         if: steps.changed-files.outputs.any_changed == 'true'
         env:
           ALL_CHANGED_DOCS: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
-          
           for file in ${ALL_CHANGED_DOCS}; do
-            echo "file name:${file}"
-            echo "file content: $(git diff HEAD^1 HEAD ${file})"
-            echo "file changed: $(git diff HEAD^1 HEAD ${file}|tail -n -4|grep '^+'|grep -i 'you\|they')"
             error_files=''
             if git diff HEAD^1 HEAD ${file}|tail -n -4|grep '^+'|grep -i 'you\|they' > /dev/null ; then
               error_files+="${file}\n"
