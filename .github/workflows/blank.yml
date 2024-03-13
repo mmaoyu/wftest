@@ -28,8 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-
+          fetch-depth: 2
       - name: Get changed files
         id: changed-files
         uses: tj-actions/changed-files@v42
@@ -44,6 +43,7 @@ jobs:
         env:
           ALL_CHANGED_DOCS: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
+          echo "ref_name: ${{ github.ref_name }},${{ GITHUB_BASE_REF }}"
           for file in ${ALL_CHANGED_DOCS}; do
             error_files=''
             if git diff HEAD^1 HEAD ${file}|tail -n -4|grep '^+'|grep -i 'you\|they' > /dev/null ; then
