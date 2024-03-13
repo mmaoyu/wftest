@@ -37,7 +37,8 @@ jobs:
           # Avoid using single or double quotes for multiline patterns
           files: | 
             doc:
-              - **.md
+              - Documentation/**.md
+              - Documentation/**/**.md
 
       - name: List all changed files markdown files
         if: steps.changed-files.outputs.any_changed == 'true'
