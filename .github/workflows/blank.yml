@@ -47,8 +47,8 @@ jobs:
           
           for file in ${ALL_CHANGED_DOCS}; do
             echo "file name:${file}"
-            echo "file content: git diff HEAD HEAD^1 ${file}"
-            echo "file changed: git diff HEAD HEAD^1 ${file}|tail -n -4|grep '^+'|grep -i 'you|they'"
+            echo "file content: $(git diff HEAD HEAD^1 ${file})"
+            echo "file changed: $(git diff HEAD HEAD^1 ${file}|tail -n -4|grep '^+'|grep -i 'you|they')"
             error_files=''
             if git diff HEAD HEAD^1 ${file}|tail -n -4|grep '^+'|grep -i 'you|they' > /dev/null ; then
               error_files+="${file}\n"
