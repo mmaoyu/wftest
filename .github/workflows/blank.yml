@@ -55,7 +55,7 @@ jobs:
             fi
           done
           if [[ "x${error_files}" != "x" ]]; then
-             echo -e "In the docs we try not to use 'you' or 'they' \n${error_files}"
+             echo -e "In the docs we try not to use 'you' or 'they' ,please check the files below: \n ${error_files}"
              exit 1
           fi
         
