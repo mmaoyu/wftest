@@ -35,7 +35,7 @@ jobs:
         uses: tj-actions/changed-files@v42
         with:
           # Avoid using single or double quotes for multiline patterns
-          files: |
+          files: | 
             doc:
               - '**.md'
               - Documentation/**    
