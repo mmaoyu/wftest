@@ -46,4 +46,5 @@ jobs:
         run: |
           for file in ${ALL_CHANGED_DOCS}; do
             echo "changed file:${file}"
+            echo "changed content: $(git diff ${file})"
           done
