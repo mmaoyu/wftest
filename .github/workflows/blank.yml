@@ -45,8 +45,11 @@ jobs:
         run: |
           echo "ref_name: ${{ github.ref_name }}"
           for file in ${ALL_CHANGED_DOCS}; do
+            echo "file name:${file}"
+            echo "file content: $(git diff ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} ${file})"
+            echo "file changed: $(git diff ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} ${file}|tail -n -4|grep '^+'|grep -i 'you\|they')"
             error_files=''
-            if git diff HEAD^1 HEAD ${file}|tail -n -4|grep '^+'|grep -i 'you\|they' > /dev/null ; then
+            if git diff ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} ${file}|tail -n -4|grep '^+'|grep -i 'you\|they' > /dev/null ; then
               error_files+="${file}\n"
             fi
           done
