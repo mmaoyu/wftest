@@ -65,11 +65,11 @@ jobs:
             #filter added contents with keyword ignore case
             content_3rd="$(git diff ${diff_start} ${diff_end} ${file}|tail -n -4|grep '^+'|grep -iw 'you\|they')"
             if [[ "x${content_3rd}" != "x" ]] ; then
-              error_msg="${error_msg}${file}\n    ${content_3rd}\n"
+              error_msg="${error_msg}${file}\n${content_3rd}\n\n"
             fi
           done
           if [[ "x${error_msg}" != "x" ]]; then
-             echo -e "In the docs we try not to use 'you' or 'they' ,please check the files below: \n ${error_msg}"
+             echo -e "In the docs we try not to use 'you' or 'they' ,please check the files below: \n\n ${error_msg}"
              exit 1
           fi
         
