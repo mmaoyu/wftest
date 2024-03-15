@@ -47,7 +47,6 @@ jobs:
         env:
           ALL_CHANGED_DOCS: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
-          echo "ref_name: ${{ github.ref_name }}"
           # Get sha for content compare
           if [[ "${{ github.event_name }}" == "pull_request" ]];then
              diff_start=${{ github.event.pull_request.base.sha }}
