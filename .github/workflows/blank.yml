@@ -65,7 +65,7 @@ jobs:
             #filter added contents with keyword ignore case
             content_3rd="$(git diff ${diff_start} ${diff_end} ${file}|tail -n -4|grep '^+'|grep -iw 'you\|they')"
             if [[ "x${content_3rd}" != "x" ]] ; then
-              error_msg="${error_files}${file}\n    ${content_3rd}\n"
+              error_msg="${error_msg}${file}\n    ${content_3rd}\n"
             fi
           done
           if [[ "x${error_msg}" != "x" ]]; then
