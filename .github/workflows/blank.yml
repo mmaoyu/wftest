@@ -52,8 +52,8 @@ jobs:
              diff_start=${{ github.event.pull_request.base.sha }}
              diff_end=${{ github.event.pull_request.head.sha }}
           elif [[ "${{ github.event_name }}" == "push" ]];then 
-             diff_start=HEAD^1
-             diff_end=HEAD
+             diff_start=${{ github.event.before }}
+             diff_end=${{ github.event.after }}
           else
              echo "not supported event type:${{ github.event_name }}"
              exit 1
