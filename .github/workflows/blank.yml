@@ -42,12 +42,13 @@ jobs:
             Documentation/**.md
             Documentation/**/**.md
 
-      - name: List all changed files markdown files with 3rd person('you','they')
+      - name: List all changed markdown files with 3rd person
         if: steps.changed-files.outputs.any_changed == 'true'
         env:
           ALL_CHANGED_DOCS: ${{ steps.changed-files.outputs.all_changed_files }}
         run: |
           echo "ref_name: ${{ github.ref_name }}"
+          # Get sha for content compare
           if [[ "${{ github.event_name }}" == "pull_request" ]];then
              diff_start=${{ github.event.pull_request.base.sha }}
              diff_end=${{ github.event.pull_request.head.sha }}
@@ -55,21 +56,19 @@ jobs:
              diff_start=${{ github.event.before }}
              diff_end=${{ github.event.after }}
           else
-             echo "not supported event type:${{ github.event_name }}"
+             echo "unsupported event type:${{ github.event_name }}"
              exit 1
           fi
-          error_files=''
+          error_msg=''
           for file in ${ALL_CHANGED_DOCS}; do
-            echo "file name:${file}"
-            echo "file content: $(git diff ${diff_start} ${diff_end} ${file})"
-            echo "file changed: $(git diff ${diff_start} ${diff_end} ${file}|tail -n -4|grep '^+'|grep -iw 'you\|they')"
-            
-            if git diff ${diff_start} ${diff_end} ${file}|tail -n -4|grep '^+'|grep -iw 'you\|they' > /dev/null ; then
-              error_files="${error_files} ${file}\n"
+            #filter added contents with keyword ignore case
+            content_3rd=$(git diff ${diff_start} ${diff_end} ${file}|tail -n -4|grep '^+'|grep -iw 'you\|they')
+            if [[ "x${content_3rd}" != "x" ]] ; then
+              error_msg="${error_files}file:${file}\n    ${content_3rd}\n"
             fi
           done
-          if [[ "x${error_files}" != "x" ]]; then
-             echo -e "In the docs we try not to use 'you' or 'they' ,please check the files below: \n ${error_files}"
+          if [[ "x${error_msg}" != "x" ]]; then
+             echo -e "In the docs we try not to use 'you' or 'they' ,please check the files below: \n ${error_msg}"
              exit 1
           fi
         
