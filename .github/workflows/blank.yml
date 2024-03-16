@@ -32,7 +32,7 @@ jobs:
         run: echo "$GITHUB_CONTEXT"
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 2
       - name: Get changed docs
         id: changed-docs
         uses: tj-actions/changed-files@v42
@@ -51,21 +51,21 @@ jobs:
         run: |
           # Get sha for content compare
           if [[ "${{ github.event_name }}" == "pull_request" ]];then
-             diff_start=${{ github.event.pull_request.base.sha }}
-             diff_end=${{ github.event.pull_request.head.sha }}
+             diff_from=${{ github.event.pull_request.base.sha }}
+             diff_to=${{ github.event.pull_request.head.sha }}
           elif [[ "${{ github.event_name }}" == "push" ]];then 
-             diff_start=${{ github.event.before }}
-             diff_end=${{ github.event.after }}
+             diff_from=${{ github.event.before }}
+             diff_to=${{ github.event.after }}
           else
              echo "unsupported event type:${{ github.event_name }}"
              exit 1
           fi
           echo -e "changed md files: \n ${ALL_CHANGED_DOCS}"
-          echo "diff from ${diff_start} to ${diff_end}"
+          echo "diff from ${diff_from} to ${diff_to}"
           error_msg=''
           for file in ${ALL_CHANGED_DOCS}; do
             #filter added contents with keyword ignore case
-            content_with_keyword="$(git diff ${diff_start} ${diff_end} ${file}|tail -n -4|grep '^+'|grep -iw ${GREP_KEYWORD_DICS})"
+            content_with_keyword="$(git diff ${diff_from} ${diff_to} ${file}|tail -n -4|grep '^+'|grep -iw ${GREP_KEYWORD_DICS})"
             if [[ "x${content_with_keyword}" != "x" ]] ; then
               error_msg="${error_msg}${file}\n${content_with_keyword}\n\n"
             fi
