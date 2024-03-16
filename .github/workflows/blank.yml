@@ -32,7 +32,7 @@ jobs:
         run: echo "$GITHUB_CONTEXT"
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: 0
       - name: Get changed docs
         id: changed-docs
         uses: tj-actions/changed-files@v42
