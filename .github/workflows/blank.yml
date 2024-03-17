@@ -62,8 +62,9 @@ jobs:
             base_sha=${{ github.event.before }}
             head_sha=${{ github.event.after }}
           fi
-          
-          echo "Base SHA:${base_sha},head SHA:${head_sha}"
+          echo "Base SHA:${base_sha}"
+          echo "Head SHA:${head_sha}"
+
           error_msg=''
           for file in ${ALL_CHANGED_DOCS}; do
             #filter added contents with keyword ignore case
@@ -72,7 +73,7 @@ jobs:
               error_msg="${error_msg}${file}\n${content_with_keyword}\n\n"
             fi
           done
-          
+
           if [[ "x${error_msg}" != "x" ]]; then
              echo -e "\n${TIPS}\n${error_msg}"
              exit 1
