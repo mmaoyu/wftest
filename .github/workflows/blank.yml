@@ -72,6 +72,7 @@ jobs:
               error_msg="${error_msg}${file}\n${content_with_keyword}\n\n"
             fi
           done
+          
           if [[ "x${error_msg}" != "x" ]]; then
              echo -e "\n${TIPS}\n${error_msg}"
              exit 1
