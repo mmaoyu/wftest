@@ -69,7 +69,7 @@ jobs:
           for file in ${ALL_CHANGED_DOCS}; do
             # Get changed content by 'git diff'
             # Delete diff summary by sed
-            # Filter added/modified content which lines with a '+' prefix 
+            # Filter added/modified lines , which with a '+' prefix 
             # Match keywords as words and ignore case
             content_with_keyword="$(git diff ${base_sha} ${head_sha} ${file}|sed '0,/^@/d'|grep '^+'|grep -iw ${GREP_KEYWORD_DICS})"
             if [[ "x${content_with_keyword}" != "x" ]] ; then
