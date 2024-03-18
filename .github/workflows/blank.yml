@@ -46,32 +46,39 @@ jobs:
         if: steps.changed-docs.outputs.any_changed == 'true'
         env:
           ALL_CHANGED_DOCS: ${{ steps.changed-docs.outputs.all_changed_files }}
+          # Keywords regex for grep 
           GREP_KEYWORD_DICS: 'you\|they'
-          MSG: 'In the docs we try not to use (you,they)'
+          # Error tips
+          TIPS: 'In the docs we try not to use (you,they),please check the file(s) below:'
         run: |
-          # Get sha for content compare
+          
+          echo -e "Changed files: \n ${ALL_CHANGED_DOCS}"
+         
+          # Get SHA
           if [[ "${{ github.event_name }}" == "pull_request" ]];then
-             diff_start=${{ github.event.pull_request.base.sha }}
-             diff_end=${{ github.event.pull_request.head.sha }}
-          elif [[ "${{ github.event_name }}" == "push" ]];then 
-             diff_start=${{ github.event.before }}
-             diff_end=${{ github.event.after }}
+             base_sha=${{ github.event.pull_request.base.sha }}
+             head_sha=${{ github.event.pull_request.head.sha }}
           else
-             echo "unsupported event type:${{ github.event_name }}"
-             exit 1
+            base_sha=${{ github.event.before }}
+            head_sha=${{ github.event.after }}
           fi
-          echo -e "changed md files: \n ${ALL_CHANGED_DOCS}"
-          echo "diff from ${diff_start} to ${diff_end}"
+          echo "Base SHA:${base_sha}"
+          echo "Head SHA:${head_sha}"
+
           error_msg=''
           for file in ${ALL_CHANGED_DOCS}; do
-            #filter added contents with keyword ignore case
-            content_with_keyword="$(git diff ${diff_start} ${diff_end} ${file}|tail -n -4|grep '^+'|grep -iw ${GREP_KEYWORD_DICS})"
+            # Get changed content by 'git diff'
+            # Delete diff summary by sed
+            # Filter added/modified lines , which with a '+' prefix 
+            # Match keywords as words and ignore case
+            content_with_keyword="$(git diff ${base_sha} ${head_sha} ${file}|sed '0,/^@/d'|grep '^+'|grep -iw ${GREP_KEYWORD_DICS})"
             if [[ "x${content_with_keyword}" != "x" ]] ; then
               error_msg="${error_msg}${file}\n${content_with_keyword}\n\n"
             fi
           done
+
           if [[ "x${error_msg}" != "x" ]]; then
-             echo -e "${MSG} ,please check the files below: \n\n ${error_msg}"
+             echo -e "\n${TIPS}\n${error_msg}"
              exit 1
           fi
         
